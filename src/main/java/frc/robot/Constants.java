@@ -113,8 +113,28 @@ public final class Constants {
                         kMaxAngularAccelerationRadiansPerSecondSquared);
     }
 
+    public static final class ElevatorConstants {
+        public static final int kElevatorMotorPort = 9;
+
+        public static final double kElevatorFF = 0;
+        public static final double kElevatorP = 0;
+        public static final double kEleavtorD = 0;
+        public static final double kMaxVel = 0;
+        public static final double kMaxAcc = 0;
+        public static final double kPositionTolerance = 0;
+
+        public static final float kTopLimit = 0;
+        public static final float kBottomLimit = 0;
+
+        public static final double kLevelOnePosition = 0;
+        public static final double kLevelTwoPosition = 0;
+        public static final double kLevelThreePosition = 0;
+        public static final double kCargoShipPosition = 0;
+    }
+
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
 
         public static final int kDriverYAxis = 1;
         public static final int kDriverXAxis = 0;

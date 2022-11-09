@@ -118,7 +118,7 @@ public final class Constants {
 
         public static final double kElevatorFF = 0;
         public static final double kElevatorP = 0;
-        public static final double kEleavtorD = 0;
+        public static final double kElevatorD = 0;
         public static final double kMaxVel = 0;
         public static final double kMaxAcc = 0;
         public static final double kPositionTolerance = 0;
@@ -142,5 +142,32 @@ public final class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.05;
+    }
+
+    public static final class CameraConstants {
+        public static final double kMountingAngle = 20.0;
+    }
+
+    public static final class ArmConstants {
+        public static final int kArmMotorPort = 9;
+
+        public static final double kRatio = 0;
+
+        public static final double kArmFF = 0;
+        public static final double kArmP = 0;
+        public static final double kArmD = 0;
+        public static final double kMaxVel = 0;
+        public static final double kMaxAcc = 0;
+        public static final double kPositionTolerance = 0;
+
+        public static final float kTopLimit = 0;
+        public static final float kBottomLimit = 0;
+
+        public static final double kLevelOnePosition = 0;
+        public static final double kLevelTwoPosition = 0;
+        public static final double kLevelThreePosition = 0;
+        public static final double kCargoShipPosition = 0;
+
+        public static final double kTrackTolerance = 0;
     }
 }

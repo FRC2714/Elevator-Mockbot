@@ -4,9 +4,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.*;
+
 import frc.robot.Constants.ElevatorConstants;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -20,7 +22,6 @@ public class Elevator extends SubsystemBase {
   private SparkMaxPIDController motorPID;
 
   private double defaultPosition = 1;
-  private double targetPosition = 0;
 
   public Elevator() {
     motor = new CANSparkMax(ElevatorConstants.kElevatorMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -30,7 +31,7 @@ public class Elevator extends SubsystemBase {
     motorPID = motor.getPIDController();
     motorPID.setFF(ElevatorConstants.kElevatorFF);
     motorPID.setP(ElevatorConstants.kElevatorP, 0);
-    motorPID.setD(ElevatorConstants.kEleavtorD, 0);
+    motorPID.setD(ElevatorConstants.kElevatorD, 0);
     motorPID.setSmartMotionMaxVelocity(ElevatorConstants.kMaxVel, 0);
     motorPID.setSmartMotionMaxAccel(ElevatorConstants.kMaxAcc, 0);
     motorPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kPositionTolerance, 0);
@@ -40,7 +41,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetPosition(double targetPosition) {
-    this.targetPosition = targetPosition;
     motorPID.setReference(targetPosition, ControlType.kSmartMotion, 0);
   }
 
@@ -66,10 +66,21 @@ public class Elevator extends SubsystemBase {
         () -> {
           setTargetPosition(targetPosition);
         },
-        () -> {
-          disable();
-        });
+        this::disable);
   }
+
+  public Command levelOne() {
+    return new InstantCommand(() -> setPosition(ElevatorConstants.kLevelOnePosition));
+  }
+
+  public Command levelTwo() {
+    return new InstantCommand(() -> setPosition(ElevatorConstants.kLevelTwoPosition));
+  }
+
+  public Command levelThree() {
+    return new InstantCommand(() -> setPosition(ElevatorConstants.kLevelThreePosition));
+  }
+
 
   @Override
   public void periodic() {

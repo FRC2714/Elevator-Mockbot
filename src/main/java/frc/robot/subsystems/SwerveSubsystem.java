@@ -1,7 +1,14 @@
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -10,7 +17,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -49,6 +60,11 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderPort,
             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
+
+            public final PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+            public final PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+            public final PIDController thetaController = new PIDController(AutoConstants.kPThetaController, 0, 0);
+            // public final PPHolonomicDriveController holonomicDriveController = new PPHolonomicDriveController(xController, yController, thetaController);
 
     private final AHRS gyro = new AHRS(Port.kMXP);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
@@ -112,4 +128,28 @@ public class SwerveSubsystem extends SubsystemBase {
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
+
+
+        public Command pathPlannerCommand(PathPlannerTrajectory path, boolean isFirstPath) {
+            HashMap<String, Command> eventMap = new HashMap<>();
+            return new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    if(isFirstPath){
+                        this.resetOdometry(path.getInitialPose());
+                    }
+                }),
+            new PPSwerveControllerCommand(
+                path,
+                this::getPose,
+                DriveConstants.kDriveKinematics,
+                xController,
+                yController,
+                thetaController,
+                this::setModuleStates,
+                eventMap,
+                this
+            )
+            );
+
+        }
 }
